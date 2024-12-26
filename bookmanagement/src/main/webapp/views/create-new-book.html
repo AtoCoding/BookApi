@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <title>Create new book</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/create-book-style.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="../js/userApi.js"></script>
+        <script src="../js/bookApi.js"></script>
+        <script src="../js/categoryApi.js"></script>
+    </head>
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="2" style="text-align: center">New Book</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="body-title"><span>Book's name</span></td>
+                    <td><input type="text" id="txtBookName" value="" class="formStyle" /></td>
+                </tr>
+                <tr>
+                    <td class="body-title"><span>Author</span></td>
+                    <td><input type="text" id="txtAuthor" value="" class="formStyle" /></td>
+                </tr>
+                <tr>
+                    <td class="body-title"><span>Date created</span></td>
+                    <td><input type="date"  id="dtDateCreated" value="" class="formStyle" /></td>
+                </tr>
+                <tr>
+                    <td class="body-title"><span>Quantity</span></td>
+                    <td><input type="number" min="0" id="nbQuantity" value="" class="formStyle" /></td>
+                </tr>
+                <tr>
+                    <td class="body-title"><span>Category's name</span></td>
+                    <td>
+                        <select id="categories" class="formStyle" multiple>
+
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" id="update-button" onclick="createNewBook()"><span id="txtUpdate">CREATE</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

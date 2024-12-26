@@ -1,0 +1,12 @@
+filter\Authentication.class
+repositories\BookRepository.class
+services\BookService.class
+controllers\BookController.class
+controllers\UserController.class
+dtos\BookDetailsDto.class
+services\CategoryService.class
+repositories\CategoryRepository.class
+controllers\CategoryController.class
+dtos\CategoryDto.class
+utils\DBUtils.class
+dtos\BookSummarizeDto.class

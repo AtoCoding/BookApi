@@ -76,7 +76,7 @@ public class BookRepository {
                     bookDetailsDto.setBookId(rs.getInt("BookId"));
                     bookDetailsDto.setBookName(rs.getNString("BookName"));
                     bookDetailsDto.setAuthor(rs.getNString("Author"));
-                    bookDetailsDto.setDateCreated(rs.getDate("DateCreated"));
+                    bookDetailsDto.setFormatDateCreated(rs.getDate("DateCreated"));
                     bookDetailsDto.setQuantity(rs.getInt("Quantity"));
                     categoryDtoList.add(new CategoryDto(
                             rs.getInt("CategoryId"), 
@@ -121,12 +121,13 @@ public class BookRepository {
         PreparedStatement stm = null;
         ResultSet rs = null;
         try {
-            String query = "insert into Book(BookName, Author, DateCreated, Quantity) values (?, ?, ?, ?)";
+            String query = "insert into Book(BookName, Author, DateCreated, Quantity, Username) values (?, ?, ?, ?, ?)";
             stm = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             stm.setNString(1, bookDetailsDto.getBookName());
             stm.setNString(2, bookDetailsDto.getAuthor());
-            stm.setDate(3, bookDetailsDto.getDateCreated());
+            stm.setDate(3, bookDetailsDto.getFormatDateCreated());
             stm.setInt(4, bookDetailsDto.getQuantity());
+            stm.setString(5, "admin");
             int affectedRows = stm.executeUpdate();
             if (affectedRows > 0) {
                 rs = stm.getGeneratedKeys();

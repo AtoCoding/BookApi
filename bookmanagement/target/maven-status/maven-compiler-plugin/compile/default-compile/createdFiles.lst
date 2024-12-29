@@ -1,4 +1,3 @@
-filter\Authentication.class
 repositories\BookRepository.class
 services\BookService.class
 controllers\BookController.class

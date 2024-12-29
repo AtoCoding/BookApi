@@ -4,6 +4,7 @@
  */
 package dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.sql.Date;
 import java.util.List;
 
@@ -12,10 +13,12 @@ import java.util.List;
  * @author Ato
  */
 public class BookDetailsDto extends BookSummarizeDto {
+    @JsonFormat(pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
     private Date dateCreated;
     private int quantity;
     List<CategoryDto> categoryList;
 
+    
     public BookDetailsDto() {
     }
 

@@ -35,9 +35,8 @@ import services.BookService;
  */
 
 @WebServlet(urlPatterns = {
-                    "/api/v1/book", 
-                    "/api/v1/admin/book/details",
-                    "/api/v1/admin/book/create"})
+                    "/api/v1/book/*", 
+                    "/api/v1/admin/book/*"})
 public class BookController extends HttpServlet {
 
     private final BookService bookService;
@@ -72,6 +71,8 @@ public class BookController extends HttpServlet {
                         ObjectMapper objectMapper = new ObjectMapper();
                         String jsonResponse = objectMapper.writeValueAsString(bookDetailsDto);
 
+                        System.out.println("Data: " + bookDetailsDto);
+                        
                         PrintWriter out = response.getWriter();
                         out.print("{\"data\":" + jsonResponse + "}");
                         out.flush();

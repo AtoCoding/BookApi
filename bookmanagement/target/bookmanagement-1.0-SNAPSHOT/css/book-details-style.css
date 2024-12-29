@@ -1,0 +1,74 @@
+tr:hover {
+    cursor: pointer;
+    background-color: #f1f1f1; /* Tô màu nền khi hover để dễ nhận diện */
+}
+table {
+    width: 50%;
+    border-collapse: collapse;
+    margin: 20px auto;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+th {
+    background-color: #f4f4f4;
+}
+
+.body-title span {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+#update-button:hover {
+    cursor: pointer;
+    background-color: lightblue;
+    
+}
+
+#update-button:hover span {
+    color: white;
+}
+
+#update-button {
+    text-align: center;
+}
+
+#update-button span {
+    font-weight: bold;
+    font-size: 20px;
+    color: black;
+}
+
+#delete-button:hover {
+    cursor: pointer;
+    background-color: lightcoral;
+    
+}
+
+#delete-button:hover span {
+    color: white;
+}
+
+#delete-button {
+    text-align: center;
+}
+
+#delete-button span {
+    font-weight: bold;
+    font-size: 20px;
+    color: black;
+}
+
+.inputInTable {
+    width: 100%; 
+    border: none;
+    padding: 5px;
+}
+
+input:disabled {
+    background-color: transparent;
+}
+

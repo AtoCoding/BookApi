@@ -71,9 +71,8 @@ async function getBookDetails(bookId) {
             quantity: response.data.data.quantity,
             categoryList: JSON.stringify(response.data.data.categoryList)
         };
-        console.log(bookDetails);
         const queryString = new URLSearchParams(bookDetails).toString();
-        //window.location.assign("book-details.html?" + queryString);
+        window.location.assign("book-details.html?" + queryString);
     } catch (error) {
         if (error.response && error.response.status === 401) {
             window.location.assign("login.html");

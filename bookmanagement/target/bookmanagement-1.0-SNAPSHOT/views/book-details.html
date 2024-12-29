@@ -17,46 +17,34 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <table>
             <thead>
                 <tr>
-                    <th colspan="2" style="text-align: center">Drink details</th>
+                    <th colspan="2" style="text-align: center">Book's information</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="body-title"><span>Drink's id</span></td>
-                    <td id="drink-id"></td>
+                    <td class="body-title"><span>Book's id</span></td>
+                    <td id="book-id"></td>
                 </tr>
                 <tr>
-                    <td class="body-title"><span>Drink's name</span></td>
-                    <td><input type="text" id="drink-name" class="inputInTable" value="" disabled /></td>
+                    <td class="body-title"><span>Book's name</span></td>
+                    <td><input type="text" id="book-name" class="inputInTable" value="" disabled /></td>
+                </tr>
+                <tr>
+                    <td class="body-title"><span>Author</span></td>
+                    <td><input type="text"  id="author" class="inputInTable" value="" disabled /></td>
+                </tr>
+                <tr>
+                    <td class="body-title"><span>Date created</span></td>
+                    <td><input type="date" id="date-created" class="inputInTable" value="" disabled /></td>
                 </tr>
                 <tr>
                     <td class="body-title"><span>Quantity</span></td>
-                    <td><input type="number"  id="quantity" class="inputInTable" value="" disabled /></td>
+                    <td><input type="number" min="0" id="quantity" class="inputInTable" value="" disabled /></td>
                 </tr>
                 <tr>
-                    <td class="body-title"><span>Brand's name</span></td>
-                   <td>
-                        <select id="brand-name" class="inputInTable" disabled>
-                            
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="body-title"><span>Category's name</span></td>
+                    <td class="body-title"><span>Category</span></td>
                     <td>
-                        <select id="category-name" class="inputInTable" disabled>
-
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="body-title"><span>Unit price</span></td>
-                    <td><input type="number" min="1000" step="0.1" id="unit-price" class="inputInTable" value="" disabled /></td>
-                </tr>
-                <tr>
-                    <td class="body-title"><span>Size's type</span></td>
-                    <td>
-                        <select id="size-type" class="inputInTable" disabled>
+                        <select id="categories" class="inputInTable" multiple disabled>
                             
                         </select>
                     </td>

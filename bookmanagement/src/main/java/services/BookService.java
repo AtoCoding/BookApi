@@ -6,6 +6,7 @@ package services;
 
 import dtos.BookDetailsDto;
 import dtos.BookSummarizeDto;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,8 @@ public class BookService {
     }
     
     public boolean createNewBook(BookDetailsDto bookDetailsDto) throws ClassNotFoundException, SQLException {
+        Date formatDate = Date.valueOf(bookDetailsDto.getDateCreated());
+        bookDetailsDto.setFormatDateCreated(formatDate);
         return bookRepository.createNewBook(bookDetailsDto);
     }
     

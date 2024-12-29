@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     } else if (currentPath.endsWith("create-new-book.html")) {
         let isLogined = false;
         isLogined = await checkAuthentication();
-        if(isLogined === false) {
+        if (isLogined === false) {
             window.location.assign("login.html");
         } else {
             await getCategoryList();
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     } else if (currentPath.endsWith("book-details.html")) {
         let isLogined = false;
         isLogined = await checkAuthentication();
-        if(isLogined === false) {
+        if (isLogined === false) {
             window.location.assign("login.html");
         } else {
             await displayBookDetails();
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 });
 async function getBookList() {
-    const apiUrl = "/bookmanagement/api/v1/book";
+    const apiUrl = "/bookmanagement/api/v1/book/all";
     try {
         const response = await axios.get(apiUrl);
         console.log(response);
@@ -67,7 +67,7 @@ async function getBookDetails(bookId) {
             bookId: response.data.data.bookId,
             bookName: response.data.data.bookName,
             author: response.data.data.author,
-            dateCreated: response.data.data.dateCreated,
+            formatDateCreated: response.data.data.formatDateCreated,
             quantity: response.data.data.quantity,
             categoryList: JSON.stringify(response.data.data.categoryList)
         };
@@ -83,19 +83,49 @@ async function getBookDetails(bookId) {
 }
 
 async function displayBookDetails() {
-    console.log("Loading");
     const params = new URLSearchParams(window.location.search);
     const bookId = params.get("bookId");
     const bookName = params.get("bookName");
     const author = params.get("author");
-    const dateCreated = params.get("dateCreated");
+    const formatDateCreated = params.get("formatDateCreated");
     const quantity = params.get("quantity");
     const categoryListString = params.get("categoryList");
     const categoryList = categoryListString ? JSON.parse(categoryListString) : [];
+
+    const cellBookId = document.getElementById("book-id");
+    cellBookId.textContent = bookId;
+
+    const cellBookName = document.getElementById("book-name");
+    cellBookName.value = bookName;
+
+    const cellAuthor = document.getElementById("author");
+    cellAuthor.value = author;
+
+    const cellDateCreated = document.getElementById("date-created");
+    cellDateCreated.value = formatDateCreated;
+
+    const cellQuantity = document.getElementById("quantity");
+    cellQuantity.value = quantity;
+
+    for (let i = 0; i < categoryList.length; i++) {
+        const cellCategories = document.getElementById("categories");
+        const optionCategory = document.createElement("option");
+        optionCategory.value = categoryList[i].categoryId;
+        optionCategory.textContent =  categoryList[i].categoryName;
+        optionCategory.setAttribute("selected", "true");
+        cellCategories.appendChild(optionCategory);
+    }
+
+    const cellUpdateButton = document.getElementById("update-button");
+    cellUpdateButton.setAttribute("onclick", "modifyData('update', " + bookId + ")");
+
+    const cellDeleteButton = document.getElementById("delete-button");
+    cellDeleteButton.setAttribute("onclick", "modifyData('delete', " + bookId + ")");
+
     console.log(bookId);
     console.log(bookName);
     console.log(author);
-    console.log(dateCreated);
+    console.log(formatDateCreated);
     console.log(quantity);
     console.log(categoryList);
 }

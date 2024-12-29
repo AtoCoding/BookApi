@@ -6,6 +6,7 @@ package dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -13,8 +14,10 @@ import java.util.List;
  * @author Ato
  */
 public class BookDetailsDto extends BookSummarizeDto {
-    @JsonFormat(pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
-    private Date dateCreated;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Ho_Chi_Minh")
+    private LocalDate dateCreated;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Ho_Chi_Minh")
+    private Date formatDateCreated;
     private int quantity;
     List<CategoryDto> categoryList;
 
@@ -22,25 +25,35 @@ public class BookDetailsDto extends BookSummarizeDto {
     public BookDetailsDto() {
     }
 
-    public BookDetailsDto(Date dateCreated, int quantity, List<CategoryDto> categoryList) {
+    public BookDetailsDto(LocalDate dateCreated, Date formatDateCreated, int quantity, List<CategoryDto> categoryList) {
         this.dateCreated = dateCreated;
+        this.formatDateCreated = formatDateCreated;
         this.quantity = quantity;
         this.categoryList = categoryList;
     }
 
-    public BookDetailsDto(Date dateCreated, int quantity, List<CategoryDto> categoryList, int bookId, String bookName, String author) {
+    public BookDetailsDto(LocalDate dateCreated, Date formatDateCreated, int quantity, List<CategoryDto> categoryList, int bookId, String bookName, String author) {
         super(bookId, bookName, author);
         this.dateCreated = dateCreated;
+        this.formatDateCreated = formatDateCreated;
         this.quantity = quantity;
         this.categoryList = categoryList;
     }
 
-    public Date getDateCreated() {
+    public LocalDate getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
+    public void setDateCreated(LocalDate dateCreated) {
         this.dateCreated = dateCreated;
+    }
+
+    public Date getFormatDateCreated() {
+        return formatDateCreated;
+    }
+
+    public void setFormatDateCreated(Date formatDateCreated) {
+        this.formatDateCreated = formatDateCreated;
     }
 
     public int getQuantity() {
@@ -58,10 +71,11 @@ public class BookDetailsDto extends BookSummarizeDto {
     public void setCategoryList(List<CategoryDto> categoryList) {
         this.categoryList = categoryList;
     }
-    
+
     @Override
     public String toString() {
-        return "BookDetailsDto{" + "bookId=" + super.getBookId() + ", bookName=" + super.getBookName() + ", author=" + super.getAuthor() + ", dateCreated=" + dateCreated + ", quantity=" + quantity + ", categoryList=" + categoryList + '}';
+        return "BookDetailsDto{" + "dateCreated=" + dateCreated + ", formatDateCreated=" + formatDateCreated + ", quantity=" + quantity + ", categoryList=" + categoryList + '}';
     }
 
+    
 }

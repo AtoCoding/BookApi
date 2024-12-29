@@ -73,7 +73,7 @@ async function getBookDetails(bookId) {
         };
         console.log(bookDetails);
         const queryString = new URLSearchParams(bookDetails).toString();
-        //window.location.assign("book-details.html?" + queryString);
+        window.location.assign("book-details.html?" + queryString);
     } catch (error) {
         if (error.response && error.response.status === 401) {
             window.location.assign("login.html");

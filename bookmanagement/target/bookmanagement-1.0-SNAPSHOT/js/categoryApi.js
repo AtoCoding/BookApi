@@ -20,3 +20,14 @@ async function getCategoryList() {
         alert(error);
     }
 }
+
+async function getCategoryResponse() {
+    const apiUrl = "/bookmanagement/api/v1/category";
+    try {
+        const response = await axios.get(apiUrl);
+        return response;
+    } catch (error) {
+        alert(error);
+        console.log(error);
+    }
+}

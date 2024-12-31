@@ -63,7 +63,7 @@ public class BookRepository {
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         try {
             con = DBUtils.makeConnection();
-            if(con != null) {
+            if (con != null) {
                 String query = "select Book.BookId, BookName, Author, DateCreated, Quantity, Category.CategoryId, CategoryName "
                         + "from Book "
                         + "left join BookCategory on Book.BookId = BookCategory.BookId "
@@ -72,23 +72,29 @@ public class BookRepository {
                 stm = con.prepareStatement(query);
                 stm.setInt(1, bookId);
                 rs = stm.executeQuery();
-                while(rs.next()) {
+                while (rs.next()) {
                     bookDetailsDto.setBookId(rs.getInt("BookId"));
                     bookDetailsDto.setBookName(rs.getNString("BookName"));
                     bookDetailsDto.setAuthor(rs.getNString("Author"));
                     bookDetailsDto.setFormatDateCreated(rs.getDate("DateCreated"));
                     bookDetailsDto.setQuantity(rs.getInt("Quantity"));
                     categoryDtoList.add(new CategoryDto(
-                            rs.getInt("CategoryId"), 
+                            rs.getInt("CategoryId"),
                             rs.getNString("CategoryName")));
                     bookDetailsDto.setCategoryList(categoryDtoList);
                 }
                 return bookDetailsDto;
             }
         } finally {
-            if(rs != null) rs.close();
-            if(stm != null) stm.close();
-            if(con != null) con.close();
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
         }
         return null;
     }
@@ -151,14 +157,83 @@ public class BookRepository {
         try {
             String query = "insert into BookCategory(BookId, CategoryId) values (?, ?)";
             stm = con.prepareStatement(query);
-            for(int i = 0; i < bookDetailsDto.getCategoryList().size(); i++) {
+            for (int i = 0; i < bookDetailsDto.getCategoryList().size(); i++) {
                 stm.setInt(1, bookId);
                 stm.setInt(2, bookDetailsDto.getCategoryList().get(i).getCategoryId());
                 stm.addBatch();
             }
             int[] results = stm.executeBatch();
-            for(int result : results) {
-                if(result == Statement.EXECUTE_FAILED) {
+            for (int result : results) {
+                if (result == Statement.EXECUTE_FAILED) {
+                    return false;
+                }
+            }
+            return true;
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+        }
+    }
+    
+    public boolean updateBookById(BookDetailsDto bookDetailsDto) throws ClassNotFoundException, SQLException {
+        Connection con = null;
+        try {
+            con = DBUtils.makeConnection();
+            if (con != null) {
+                con.setAutoCommit(false);
+                boolean isBookUpdated = updateBook(con, bookDetailsDto);
+                boolean isBookCategoryUpdated = updateBookCategory(con, bookDetailsDto);
+                if(isBookUpdated && isBookCategoryUpdated) {
+                    con.commit();
+                    return true;
+                }
+                con.rollback();
+            }
+        } finally {
+            if (con != null) {
+                con.close();
+            }
+        }
+        return false;
+    }
+
+    private boolean updateBook(Connection con, BookDetailsDto bookDetailsDto) throws SQLException {
+        PreparedStatement stm = null;
+        try {
+            String query = "update Book set BookName = ?, Author = ?, DateCreated = ?, Quantity = ?, Username = ? where BookId = ?";
+            stm = con.prepareStatement(query);
+            stm.setNString(1, bookDetailsDto.getBookName());
+            stm.setNString(2, bookDetailsDto.getAuthor());
+            stm.setDate(3, bookDetailsDto.getFormatDateCreated());
+            stm.setInt(4, bookDetailsDto.getQuantity());
+            stm.setString(5, "admin");
+            stm.setInt(6, bookDetailsDto.getBookId());
+            int affectedRows = stm.executeUpdate();
+            if (affectedRows > 0) {
+                return true;
+            }
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+        }
+        return false;
+    }
+
+    private boolean updateBookCategory(Connection con, BookDetailsDto bookDetailsDto) throws SQLException {
+        PreparedStatement stm = null;
+        try {
+            String query = "update BookCategory set CategoryId = ? where BookId = ?";
+            stm = con.prepareStatement(query);
+            for (int i = 0; i < bookDetailsDto.getCategoryList().size(); i++) {
+                stm.setInt(1, bookDetailsDto.getCategoryList().get(i).getCategoryId());
+                stm.setInt(2, bookDetailsDto.getBookId());
+                stm.addBatch();
+            }
+            int[] results = stm.executeBatch();
+            for (int result : results) {
+                if (result == Statement.EXECUTE_FAILED) {
                     return false;
                 }
             }

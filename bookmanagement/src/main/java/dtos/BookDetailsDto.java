@@ -39,7 +39,7 @@ public class BookDetailsDto extends BookSummarizeDto {
         this.quantity = quantity;
         this.categoryList = categoryList;
     }
-
+    
     public LocalDate getDateCreated() {
         return dateCreated;
     }
@@ -74,8 +74,7 @@ public class BookDetailsDto extends BookSummarizeDto {
 
     @Override
     public String toString() {
-        return "BookDetailsDto{" + "dateCreated=" + dateCreated + ", formatDateCreated=" + formatDateCreated + ", quantity=" + quantity + ", categoryList=" + categoryList + '}';
+        return "BookDetailsDto{" + "bookId=" + super.getBookId() + ", bookName=" + super.getBookName() + ", author=" + super.getAuthor() + ", dateCreated=" + dateCreated + ", formatDateCreated=" + formatDateCreated + ", quantity=" + quantity + ", categoryList=" + categoryList + '}';
     }
-
-    
+  
 }

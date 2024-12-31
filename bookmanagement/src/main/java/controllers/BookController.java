@@ -33,9 +33,10 @@ import services.BookService;
 
  */
 @WebServlet(urlPatterns = {
-                "/api/v1/book/all",
-                "/api/v1/admin/book/details",
-                "/api/v1/admin/book/create"})
+    "/api/v1/book/all",
+    "/api/v1/admin/book/details",
+    "/api/v1/admin/book/create",
+    "/api/v1/admin/book/update"})
 public class BookController extends HttpServlet {
 
     private final BookService bookService;
@@ -70,8 +71,6 @@ public class BookController extends HttpServlet {
                     if (bookDetailsDto != null) {
                         ObjectMapper objectMapper = new ObjectMapper();
                         String jsonResponse = objectMapper.writeValueAsString(bookDetailsDto);
-
-                        System.out.println("Data: " + bookDetailsDto);
 
                         PrintWriter out = response.getWriter();
                         out.print("{\"data\":" + jsonResponse + "}");
@@ -108,9 +107,6 @@ public class BookController extends HttpServlet {
                     stringBuilder.toString(),
                     BookDetailsDto.class);
 
-            System.out.println(stringBuilder);
-            System.out.println(bookDetailsDto);
-
             boolean isBookCreated = bookService.createNewBook(bookDetailsDto);
 
             PrintWriter out = response.getWriter();
@@ -129,6 +125,37 @@ public class BookController extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
+        try {
+            StringBuilder stringBuilder = new StringBuilder();
+            BufferedReader reader = request.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+            BookDetailsDto bookDetailsDto = objectMapper.readValue(
+                    stringBuilder.toString(),
+                    BookDetailsDto.class);
+            
+            boolean isBookUpdated = bookService.updateBookById(bookDetailsDto);
+
+            PrintWriter out = response.getWriter();
+            if (isBookUpdated) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                out.print("{\"message\": \"The book is updated!\"}");
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.print("{\"message\": \"The book is not updated!\"}");
+            }
+            out.flush();
+        } catch (IOException | ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(BookController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

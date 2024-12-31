@@ -17,25 +17,34 @@ import repositories.BookRepository;
  * @author Ato
  */
 public class BookService {
+
     private final BookRepository bookRepository;
 
     public BookService() {
         bookRepository = new BookRepository();
     }
-    
+
     public List<BookSummarizeDto> getBookList() throws SQLException, ClassNotFoundException {
         List<BookSummarizeDto> bookDtoList = bookRepository.getBookList();
-        if(bookDtoList == null) bookDtoList = new ArrayList<>();
+        if (bookDtoList == null) {
+            bookDtoList = new ArrayList<>();
+        }
         return bookDtoList;
     }
-    
+
     public boolean createNewBook(BookDetailsDto bookDetailsDto) throws ClassNotFoundException, SQLException {
         Date formatDate = Date.valueOf(bookDetailsDto.getDateCreated());
         bookDetailsDto.setFormatDateCreated(formatDate);
         return bookRepository.createNewBook(bookDetailsDto);
     }
-    
+
     public BookDetailsDto getBookDetails(int bookId) throws SQLException, ClassNotFoundException {
         return bookRepository.getBookDetails(bookId);
+    }
+
+    public boolean updateBookById(BookDetailsDto bookDetailsDto) throws ClassNotFoundException, SQLException {
+        Date formatDate = Date.valueOf(bookDetailsDto.getDateCreated());
+        bookDetailsDto.setFormatDateCreated(formatDate);
+        return bookRepository.updateBookById(bookDetailsDto);
     }
 }

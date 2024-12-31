@@ -111,7 +111,7 @@ async function displayBookDetails() {
         const cellCategories = document.getElementById("categories");
         const optionCategory = document.createElement("option");
         optionCategory.value = categoryList[i].categoryId;
-        optionCategory.textContent =  categoryList[i].categoryName;
+        optionCategory.textContent = categoryList[i].categoryName;
         optionCategory.setAttribute("selected", "true");
         cellCategories.appendChild(optionCategory);
     }
@@ -121,13 +121,90 @@ async function displayBookDetails() {
 
     const cellDeleteButton = document.getElementById("delete-button");
     cellDeleteButton.setAttribute("onclick", "modifyData('delete', " + bookId + ")");
+}
 
-    console.log(bookId);
-    console.log(bookName);
-    console.log(author);
-    console.log(formatDateCreated);
-    console.log(quantity);
-    console.log(categoryList);
+async function modifyData(action, bookId) {
+    if (action === "update") {
+        const cellBookName = document.getElementById("book-name");
+        cellBookName.removeAttribute("disabled");
+
+        const cellAuthor = document.getElementById("author");
+        cellAuthor.removeAttribute("disabled");
+
+        const cellDateCreated = document.getElementById("date-created");
+        cellDateCreated.removeAttribute("disabled");
+
+        const cellQuantity = document.getElementById("quantity");
+        cellQuantity.removeAttribute("disabled");
+
+        const cellCategories = document.getElementById("categories");
+        cellCategories.removeAttribute("disabled");
+
+        const txtUpdate = document.getElementById("txtUpdate");
+        txtUpdate.textContent = "Confirm update";
+        const btnUpdate = document.getElementById("update-button");
+        btnUpdate.setAttribute("onclick", "confirmModifyData('update', " + bookId + ")");
+
+        try {
+            const categoryResponse = await getCategoryResponse();
+            const categoryData = categoryResponse.data.data;
+
+            const cellCategories = document.getElementById("categories");
+            for (let i = 0; i < categoryData.length; i++) {
+                const option = document.createElement("option");
+                const optionSelectedValue = cellCategories.value;
+                option.value = categoryData[i].categoryId;
+                option.textContent = categoryData[i].categoryName;
+                cellCategories.appendChild(option);
+            }
+
+        } catch (error) {
+            alert(error);
+        }
+    } else if (action === "delete") {
+
+    }
+}
+
+async function confirmModifyData(action, bookId) {
+    if (action === "update") {
+        const cellBookId = document.getElementById("book-id").textContent;
+        const cellBookName = document.getElementById("book-name").value;
+        const cellAuthor = document.getElementById("author").value;
+        const cellDateCreated = document.getElementById("date-created").value;
+        const cellQuantity = document.getElementById("quantity").value;
+        const selectedCategories = Array.from(document.querySelector('#categories').selectedOptions)
+                .map(option => ({
+                        categoryId: option.value,
+                        categoryName: option.textContent.trim()
+                    }));
+        const apiUrl = "/bookmanagement/api/v1/admin/book/update";
+        
+        try {
+            const response = await axios.put(apiUrl, {
+                bookId: cellBookId,
+                bookName: cellBookName,
+                author: cellAuthor,
+                dateCreated: cellDateCreated,
+                quantity: cellQuantity,
+                categoryList: selectedCategories
+            });
+            console.log(response);
+            if (response !== null) {
+                alert(response.data.message);
+                
+                //window.location.assign("homepage.html");
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                window.location.assign("login.html");
+            } else {
+                window.location.assign("homepage.html");
+            }
+        }
+    } else if (action === "delete") {
+
+    }
 }
 
 async function navigateToCreateBook() {

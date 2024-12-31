@@ -28,3 +28,6 @@ go
 alter table Category add foreign key(Username) references Account(Username);
 update Category set Username = 'admin';
 alter table Category alter column Username varchar(50) NOT NULL;
+
+alter table BookCategory drop constraint PK_BOOKCATEGORY;
+alter table BookCategory add BCID int primary key identity;

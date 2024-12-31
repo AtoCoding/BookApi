@@ -64,7 +64,7 @@ public class BookRepository {
         try {
             con = DBUtils.makeConnection();
             if (con != null) {
-                String query = "select Book.BookId, BookName, Author, DateCreated, Quantity, Category.CategoryId, CategoryName "
+                String query = "select Book.BookId, BookName, Author, DateCreated, Quantity, Category.CategoryId, CategoryName, BCID "
                         + "from Book "
                         + "left join BookCategory on Book.BookId = BookCategory.BookId "
                         + "left join Category on BookCategory.CategoryId = Category.CategoryId "
@@ -79,11 +79,43 @@ public class BookRepository {
                     bookDetailsDto.setFormatDateCreated(rs.getDate("DateCreated"));
                     bookDetailsDto.setQuantity(rs.getInt("Quantity"));
                     categoryDtoList.add(new CategoryDto(
+                            rs.getInt("BCID"),
                             rs.getInt("CategoryId"),
                             rs.getNString("CategoryName")));
                     bookDetailsDto.setCategoryList(categoryDtoList);
                 }
                 return bookDetailsDto;
+            }
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return null;
+    }
+    
+    public List<Integer> getBcIdListByBookId(int bookId) throws SQLException, ClassNotFoundException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        List<Integer> bcIdList = new ArrayList<>();
+        try {
+            con = DBUtils.makeConnection();
+            if (con != null) {
+                String query = "select * from BookCategory where BookId = ?";
+                stm = con.prepareStatement(query);
+                stm.setInt(1, bookId);
+                rs = stm.executeQuery();
+                while (rs.next()) {
+                    bcIdList.add(rs.getInt("BCID"));
+                }
+                return bcIdList;
             }
         } finally {
             if (rs != null) {
@@ -176,15 +208,28 @@ public class BookRepository {
         }
     }
     
-    public boolean updateBookById(BookDetailsDto bookDetailsDto) throws ClassNotFoundException, SQLException {
+    public boolean updateBookByBookId(BookDetailsDto bookDetailsDto, List<Integer> bcIdList, String action) throws ClassNotFoundException, SQLException {
         Connection con = null;
         try {
             con = DBUtils.makeConnection();
             if (con != null) {
                 con.setAutoCommit(false);
                 boolean isBookUpdated = updateBook(con, bookDetailsDto);
-                boolean isBookCategoryUpdated = updateBookCategory(con, bookDetailsDto);
-                if(isBookUpdated && isBookCategoryUpdated) {
+                boolean isBookCategoryModify = true;
+                if (action.equals("override")) {
+                    isBookCategoryModify = updateBookCategory(con, bookDetailsDto, bcIdList);
+                } else if (action.equals("add")) {
+                    isBookCategoryModify = createBookCategory(con, bookDetailsDto.getBookId(), bookDetailsDto);
+                } else if (action.equals("delete&add")) {
+                    boolean isBookCategoryDeleted = deleteBookCategory(con, bookDetailsDto);
+                    if(isBookCategoryDeleted) {
+                        isBookCategoryModify = createBookCategory(con, bookDetailsDto.getBookId(), bookDetailsDto);
+                    } else {
+                        isBookCategoryModify = false;
+                    }
+                }
+                
+                if(isBookUpdated && isBookCategoryModify) {
                     con.commit();
                     return true;
                 }
@@ -193,6 +238,22 @@ public class BookRepository {
         } finally {
             if (con != null) {
                 con.close();
+            }
+        }
+        return false;
+    }
+    
+    private boolean deleteBookCategory(Connection con, BookDetailsDto bookDetailsDto) throws SQLException {
+        PreparedStatement stm = null;
+        try {
+            String query = "delete from BookCategory where BookId = ?";
+            stm = con.prepareStatement(query);
+            stm.setInt(1, bookDetailsDto.getBookId());
+            int affectedRows = stm.executeUpdate();
+            if(affectedRows > 0) return true;
+        } finally {
+            if (stm != null) {
+                stm.close();
             }
         }
         return false;
@@ -221,14 +282,14 @@ public class BookRepository {
         return false;
     }
 
-    private boolean updateBookCategory(Connection con, BookDetailsDto bookDetailsDto) throws SQLException {
+    private boolean updateBookCategory(Connection con, BookDetailsDto bookDetailsDto, List<Integer> bcIdList) throws SQLException {
         PreparedStatement stm = null;
         try {
-            String query = "update BookCategory set CategoryId = ? where BookId = ?";
+            String query = "update BookCategory set CategoryId = ? where BCID = ?";
             stm = con.prepareStatement(query);
             for (int i = 0; i < bookDetailsDto.getCategoryList().size(); i++) {
                 stm.setInt(1, bookDetailsDto.getCategoryList().get(i).getCategoryId());
-                stm.setInt(2, bookDetailsDto.getBookId());
+                stm.setInt(2, bcIdList.get(i));
                 stm.addBatch();
             }
             int[] results = stm.executeBatch();

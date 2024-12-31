@@ -42,9 +42,45 @@ public class BookService {
         return bookRepository.getBookDetails(bookId);
     }
 
-    public boolean updateBookById(BookDetailsDto bookDetailsDto) throws ClassNotFoundException, SQLException {
+    public boolean updateBookByBookId(BookDetailsDto bookDetailsDto) throws ClassNotFoundException, SQLException {
         Date formatDate = Date.valueOf(bookDetailsDto.getDateCreated());
         bookDetailsDto.setFormatDateCreated(formatDate);
-        return bookRepository.updateBookById(bookDetailsDto);
+        List<Integer> bcIdList = getBcIdListByBookId(bookDetailsDto.getBookId());
+        String action = "none";
+        if (bcIdList == null) {
+            return false;
+        } else {
+            /*
+            Số lượng db list bằng với client list
+            ---> kiểm tra bcid ---> bcid khác nhau ---> ghi đè <---> ko làm gì
+            */
+            
+            /*
+            Số lượng db list nhỏ hơn client list
+            ---> xóa trong db ---> thêm mới 
+            */
+            
+            /*
+            Số lượng db list lớn hơn client list
+            ---> xóa trong db ---> thêm mới 
+            */
+            if (bcIdList.isEmpty()) {
+                action = "add";
+            } else if (bcIdList.size() == bookDetailsDto.getCategoryList().size()) {
+                for(int i = 0; i < bookDetailsDto.getCategoryList().size(); i++) {
+                    if(!bcIdList.contains(bookDetailsDto.getCategoryList().get(i).getBcId())) {
+                        action = "override";
+                        break;
+                    }
+                }
+            } else if (bcIdList.size() != bookDetailsDto.getCategoryList().size()) {
+                action = "delete&add";
+            }
+            return bookRepository.updateBookByBookId(bookDetailsDto, bcIdList, action);
+        }
+    }
+    
+    private List<Integer> getBcIdListByBookId(int bookId) throws SQLException, ClassNotFoundException {
+        return bookRepository.getBcIdListByBookId(bookId);
     }
 }

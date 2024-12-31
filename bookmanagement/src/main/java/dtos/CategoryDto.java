@@ -10,15 +10,25 @@ package dtos;
  */
 public class CategoryDto {
 
+    private int bcId;
     private int categoryId;
     private String categoryName;
 
     public CategoryDto() {
     }
 
-    public CategoryDto(int categoryId, String categoryName) {
+    public CategoryDto(int bcId, int categoryId, String categoryName) {
+        this.bcId = bcId;
         this.categoryId = categoryId;
         this.categoryName = categoryName;
+    }
+
+    public int getBcId() {
+        return bcId;
+    }
+
+    public void setBcId(int bcId) {
+        this.bcId = bcId;
     }
 
     public int getCategoryId() {
@@ -39,7 +49,7 @@ public class CategoryDto {
 
     @Override
     public String toString() {
-        return "CategoryDto{" + "categoryId=" + categoryId + ", categoryName=" + categoryName + '}';
+        return "CategoryDto{" + "bcId=" + bcId + ", categoryId=" + categoryId + ", categoryName=" + categoryName + '}';
     }
 
 }

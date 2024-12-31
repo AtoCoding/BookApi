@@ -110,6 +110,7 @@ async function displayBookDetails() {
     for (let i = 0; i < categoryList.length; i++) {
         const cellCategories = document.getElementById("categories");
         const optionCategory = document.createElement("option");
+        optionCategory.name = categoryList[i].bcId;
         optionCategory.value = categoryList[i].categoryId;
         optionCategory.textContent = categoryList[i].categoryName;
         optionCategory.setAttribute("selected", "true");
@@ -149,10 +150,10 @@ async function modifyData(action, bookId) {
             const categoryResponse = await getCategoryResponse();
             const categoryData = categoryResponse.data.data;
 
-            const cellCategories = document.getElementById("categories");
             for (let i = 0; i < categoryData.length; i++) {
                 const option = document.createElement("option");
                 const optionSelectedValue = cellCategories.value;
+                option.name = 0;
                 option.value = categoryData[i].categoryId;
                 option.textContent = categoryData[i].categoryName;
                 cellCategories.appendChild(option);
@@ -175,11 +176,12 @@ async function confirmModifyData(action, bookId) {
         const cellQuantity = document.getElementById("quantity").value;
         const selectedCategories = Array.from(document.querySelector('#categories').selectedOptions)
                 .map(option => ({
+                        bcId: option.name,
                         categoryId: option.value,
                         categoryName: option.textContent.trim()
                     }));
+
         const apiUrl = "/bookmanagement/api/v1/admin/book/update";
-        
         try {
             const response = await axios.put(apiUrl, {
                 bookId: cellBookId,
@@ -189,16 +191,16 @@ async function confirmModifyData(action, bookId) {
                 quantity: cellQuantity,
                 categoryList: selectedCategories
             });
-            console.log(response);
             if (response !== null) {
                 alert(response.data.message);
-                
-                //window.location.assign("homepage.html");
+                window.location.assign("homepage.html");
             }
         } catch (error) {
             if (error.response && error.response.status === 401) {
+                alert(error.response.data.message);
                 window.location.assign("login.html");
             } else {
+                alert(error.response.data.message);
                 window.location.assign("homepage.html");
             }
         }

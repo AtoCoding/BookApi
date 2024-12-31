@@ -142,8 +142,8 @@ public class BookController extends HttpServlet {
             BookDetailsDto bookDetailsDto = objectMapper.readValue(
                     stringBuilder.toString(),
                     BookDetailsDto.class);
-            
-            boolean isBookUpdated = bookService.updateBookById(bookDetailsDto);
+
+            boolean isBookUpdated = bookService.updateBookByBookId(bookDetailsDto);
 
             PrintWriter out = response.getWriter();
             if (isBookUpdated) {

@@ -140,6 +140,7 @@ async function modifyData(action, bookId) {
 
         const cellCategories = document.getElementById("categories");
         cellCategories.removeAttribute("disabled");
+        const cellCategoryList = Array.from(cellCategories.options).map(option => option.value);
 
         const txtUpdate = document.getElementById("txtUpdate");
         txtUpdate.textContent = "Confirm update";
@@ -151,12 +152,14 @@ async function modifyData(action, bookId) {
             const categoryData = categoryResponse.data.data;
 
             for (let i = 0; i < categoryData.length; i++) {
-                const option = document.createElement("option");
-                const optionSelectedValue = cellCategories.value;
-                option.name = 0;
-                option.value = categoryData[i].categoryId;
-                option.textContent = categoryData[i].categoryName;
-                cellCategories.appendChild(option);
+                if (!cellCategoryList.includes(categoryData[i].categoryId.toString())) {
+                    const option = document.createElement("option");
+                    const optionSelectedValue = cellCategories.value;
+                    option.name = 0;
+                    option.value = categoryData[i].categoryId;
+                    option.textContent = categoryData[i].categoryName;
+                    cellCategories.appendChild(option);
+                }
             }
 
         } catch (error) {
